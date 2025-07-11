@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Greeting</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            color: white;
+            max-width: 800px;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 3.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-20px); }
+            60% { transform: translateY(-10px); }
+        }
+
+        .slider {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .slides {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .slide {
+            min-width: 100%;
+            box-sizing: border-box;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        .nav-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 1.5em;
+        }
+
+        .prev {
+            left: 10px;
+        }
+
+        .next {
+            right: 10px;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #f1c40f;
+            animation: fall 5s linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-100vh) rotate(0deg); }
+            100% { transform: translateY(100vh) rotate(360deg); }
+        }
+
+        .audio-controls {
+            margin-top: 20px;
+        }
+
+        .audio-button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.3s;
+        }
+
+        .audio-button:hover {
+            background: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎉 Happy Birthday! 🎉</h1>
+        <p>Have an amazing day filled with joy and surprises!</p>
+        <div class="slider">
+            <div class="slides">
+                <div class="slide"><img src="image1.JPG" alt="Birthday Cake"></div>
+                <div class="slide"><img src="image2.JPG" alt="Party"></div>
+                <div class="slide"><img src="image3.JPG" alt="Gifts"></div>
+                <div class="slide"><img src="image4.JPG" alt="Cake"></div>
+            </div>
+            <button class="nav-button prev">❮</button>
+            <button class="nav-button next">❯</button>
+        </div>
+        <div class="audio-controls">
+            <button class="audio-button" onclick="toggleAudio()">Play/Pause Music</button>
+        </div>
+    </div>
+    <audio id="bgMusic" loop>
+        <source src="Keane_SomewhereOnlyWeKnow.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        // Image Slider
+        const slides = document.querySelector('.slides');
+        const slideImages = document.querySelectorAll('.slide');
+        const prevButton = document.querySelector('.prev');
+        const nextButton = document.querySelector('.next');
+        let currentIndex = 0;
+
+        function showSlide(index) {
+            if (index >= slideImages.length) currentIndex = 0;
+            else if (index < 0) currentIndex = slideImages.length - 1;
+            else currentIndex = index;
+            slides.style.transform = `translateX(${-currentIndex * 100}%)`;
+        }
+
+        prevButton.addEventListener('click', () => showSlide(currentIndex - 1));
+        nextButton.addEventListener('click', () => showSlide(currentIndex + 1));
+
+        // Auto-slide every 5 seconds
+        setInterval(() => showSlide(currentIndex + 1), 5000);
+
+        // Confetti Animation
+        function createConfetti() {
+            const confetti = document.createElement('div');
+            confetti.classList.add('confetti');
+            confetti.style.left = Math.random() * 100 + 'vw';
+            confetti.style.background = ['#f1c40f', '#e74c3c', '#3498db', '#2ecc71'][Math.floor(Math.random() * 4)];
+            confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            document.body.appendChild(confetti);
+            setTimeout(() => confetti.remove(), 5000);
+        }
+
+        setInterval(createConfetti, 100);
+
+        // Audio Control
+        const audio = document.getElementById('bgMusic');
+        let isPlaying = false;
+
+        function toggleAudio() {
+            if (isPlaying) {
+                audio.pause();
+                isPlaying = false;
+            } else {
+                audio.play().then(() => {
+                    isPlaying = true;
+                }).catch(e => {
+                    console.log('Audio playback failed:', e);
+                    alert('Please ensure the audio file is correctly placed and try again.');
+                });
+            }
+        }
+
+        // Attempt autoplay with fallback
+        audio.play().then(() => {
+            isPlaying = true;
+        }).catch(e => {
+            console.log('Autoplay prevented:', e);
+            // Rely on manual play button
+        });
+    </script>
+</body>
+</html>
